@@ -1,0 +1,74 @@
+<%- include('./partials/headers') %>
+<div class="card p-4 shadow-sm mb-4">
+  <div class="d-flex align-items-center gap-3">
+    <% if (currentUser.profileImage) { %>
+      <img src="/<%= currentUser.profileImage %>" class="rounded-circle border" width="70" height="70" style="object-fit: cover;" alt="Profile" />
+    <% } %>
+    <div>
+      <h3><%= currentUser.name %> (<%= currentUser.role %>)</h3>
+      <p class="text-muted mb-0"><%= currentUser.email %></p>
+    </div>
+  </div>
+</div>
+
+<% const isAdmin = currentUser.role === 'Admin'; %>
+<h4><%= isAdmin ? 'All Blogs Across Users' : 'My Authored Blogs' %></h4>
+<div class="list-group shadow-sm">
+  <% if (blogs.length === 0) { %>
+    <div class="list-group-item text-muted"><%= isAdmin ? 'No blogs found.' : "You haven't posted any blogs yet." %></div>
+  <% } %>
+  <% blogs.forEach(blog => { %>
+    <div class="list-group-item d-flex justify-content-between align-items-center">
+      <div>
+        <a href="/blogs/<%= blog._id %>" class="fw-bold text-decoration-none"><%= blog.title %></a>
+        <small class="text-muted d-block">
+          <%= isAdmin ? 'By ' + (blog.author ? blog.author.name : 'Unknown User') + ' • ' : '' %>
+          <%= blog.createdAt.toDateString() %>
+        </small>
+      </div>
+      <div class="d-flex gap-2">
+        <a href="/blogs/edit/<%= blog._id %>" class="btn btn-sm btn-outline-warning">Edit</a>
+        <form action="/blogs/<%= blog._id %>?_method=DELETE" method="POST">
+          <button class="btn btn-sm btn-outline-danger">Delete</button>
+        </form>
+      </div>
+    </div>
+  <% }) %>
+</div>
+
+<% if (currentUser.role === 'Admin') { %>
+  <h4 class="mt-5 mb-3">Registered Users</h4>
+  <div class="card p-3 shadow-sm">
+    <% if (!users || users.length === 0) { %>
+      <p class="text-muted mb-0">No users found.</p>
+    <% } else { %>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-dark">
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Joined</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% users.forEach(user => { %>
+              <tr>
+                <td><%= user.name %></td>
+                <td><%= user.email %></td>
+                <td>
+                  <span class="badge <%= user.role === 'Admin' ? 'bg-danger' : 'bg-primary' %>">
+                    <%= user.role %>
+                  </span>
+                </td>
+                <td><%= user.createdAt.toDateString() %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+<% } %>
+<%- include('./partials/footer') %>

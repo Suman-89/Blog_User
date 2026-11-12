@@ -1,0 +1,50 @@
+<%- include('./partials/headers') %>
+<h2 class="mb-4">User Management (Super Admin Portal)</h2>
+<div class="card p-3 shadow-sm">
+  <table class="table table-hover align-middle mb-0">
+    <thead class="table-dark">
+      <tr>
+        <th>User</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Joined</th>
+        <th class="text-end">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% users.forEach(u => { %>
+        <tr>
+          <td>
+            <div class="d-flex align-items-center gap-2">
+              <% if (u.profileImage) { %>
+                <img src="/<%= u.profileImage %>" class="rounded-circle" width="35" height="35" style="object-fit: cover;" alt="Avatar" />
+              <% } else { %>
+                <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
+                  <%= u.name.charAt(0).toUpperCase() %>
+                </div>
+              <% } %>
+              <span><%= u.name %></span>
+            </div>
+          </td>
+          <td><%= u.email %></td>
+          <td>
+            <span class="badge <%= u.role === 'Admin' ? 'bg-danger' : 'bg-primary' %>">
+              <%= u.role %>
+            </span>
+          </td>
+          <td><%= u.createdAt.toDateString() %></td>
+          <td class="text-end">
+            <% if (u._id.toString() !== currentUser._id.toString()) { %>
+              <form action="/api/users/<%= u._id %>?_method=DELETE" method="POST" class="d-inline" onsubmit="return confirm('Permanently remove this user and all associated blogs?');">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+              </form>
+            <% } else { %>
+              <small class="text-muted">Current Account</small>
+            <% } %>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+<%- include('./partials/footer') %>

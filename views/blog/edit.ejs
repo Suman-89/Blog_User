@@ -1,0 +1,26 @@
+<%- include('../partials/headers') %>
+<div class="card p-4 shadow-sm">
+  <h3>Edit Blog</h3>
+  <form action="/blogs/<%= blog._id %>?_method=PUT" method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label class="form-label">Title</label>
+      <input type="text" name="title" class="form-control" value="<%= blog.title %>" required />
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Content</label>
+      <textarea name="content" rows="6" class="form-control" required><%= blog.content %></textarea>
+    </div>
+    <% if (blog.blogImage) { %>
+      <div class="mb-3">
+        <p class="mb-1">Current Image:</p>
+        <img src="/<%= blog.blogImage %>" width="120" class="rounded border mb-2" alt="Blog Preview" />
+      </div>
+    <% } %>
+    <div class="mb-3">
+      <label class="form-label">Replace Image</label>
+      <input type="file" name="blogImage" class="form-control" accept="image/*" />
+    </div>
+    <button type="submit" class="btn btn-success">Update</button>
+  </form>
+</div>
+<%- include('../partials/footer') %>

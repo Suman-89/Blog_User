@@ -1,0 +1,28 @@
+<%- include('../partials/headers') %>
+<div class="card p-4 shadow-sm">
+  <h2><%= blog.title %></h2>
+  <p class="text-muted">Published by <%= blog.author ? blog.author.name : 'Unknown' %> on <%= blog.createdAt.toDateString() %></p>
+  
+  <% if (blog.blogImage) { %>
+    <img src="/<%= blog.blogImage %>" class="img-fluid rounded mb-4" style="max-height: 400px; width: auto;" alt="Blog image" />
+  <% } %>
+
+  <div class="mb-4" style="white-space: pre-line;">
+    <%= blog.content %>
+  </div>
+
+  <% const isAdmin = currentUser && currentUser.role === 'Admin'; %>
+<% const isAuthor = currentUser && blog.author && currentUser._id && blog.author._id && currentUser._id.toString() === blog.author._id.toString(); %>
+
+<% if (isAdmin || isAuthor) { %>
+    <div class="d-flex gap-2 border-top pt-3">
+      <a href="/blogs/edit/<%= blog._id %>" class="btn btn-warning">Edit</a>
+      <form action="/blogs/<%= blog._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Confirm deletion?');">
+        <button class="btn btn-danger">
+          <%= isAdmin ? 'Hard Delete (Admin)' : 'Delete' %>
+        </button>
+      </form>
+    </div>
+  <% } %>
+</div>
+<%- include('../partials/footer') %>
